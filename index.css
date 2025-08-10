@@ -1,0 +1,121 @@
+ .u-section-1 {
+  background-image: url("images/Feuerdrachen_und_Vulkaninferno.png");
+  background-position: 50% 50%;
+}
+
+.u-section-1 .u-sheet-1 {
+  min-height: 853px;
+}
+
+.u-section-1 .u-group-1 {
+  width: 508px;
+  min-height: 457px;
+  height: auto;
+  margin: 60px auto;
+}
+
+.u-section-1 .u-container-layout-1 {
+  padding: 0;
+}
+
+.u-section-1 .u-text-1 {
+  letter-spacing: 1px;
+  font-weight: 700;
+  text-transform: none;
+  font-size: 2.25rem;
+  margin: 97px 0 0 60px;
+}
+
+.u-section-1 .u-image-1 {
+  width: 151px;
+  height: 151px;
+  margin: -104px auto 0 46px;
+}
+
+.u-section-1 .u-text-2 {
+  font-size: 1.125rem;
+  margin: 14px 30px 0;
+}
+
+.u-section-1 .u-social-icons-1 {
+  height: 75px;
+  width: 75px;
+  margin: 27px auto 0 46px;
+}
+
+.u-section-1 .u-icon-1 {
+  height: 0;
+}
+
+.u-section-1 .u-text-3 {
+  margin: -52px 60px 0 0;
+}
+
+.u-section-1 .u-btn-1 {
+  background-image: none;
+  padding: 0;
+}
+
+@media (max-width: 1199px) {
+  .u-section-1 .u-sheet-1 {
+    min-height: 703px;
+  }
+
+  .u-section-1 .u-group-1 {
+    height: auto;
+  }
+
+  .u-section-1 .u-social-icons-1 {
+    min-height: 16px;
+  }
+}
+
+@media (max-width: 991px) {
+  .u-section-1 .u-sheet-1 {
+    min-height: 629px;
+  }
+
+  .u-section-1 .u-group-1 {
+    width: 455px;
+  }
+}
+
+@media (max-width: 767px) {
+  .u-section-1 .u-sheet-1 {
+    min-height: 472px;
+  }
+
+  .u-section-1 .u-container-layout-1 {
+    padding-left: 30px;
+    padding-right: 30px;
+  }
+}
+
+@media (max-width: 575px) {
+  .u-section-1 .u-sheet-1 {
+    min-height: 742px;
+  }
+
+  .u-section-1 .u-group-1 {
+    width: 293px;
+  }
+
+  .u-section-1 .u-container-layout-1 {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .u-section-1 .u-text-1 {
+    font-size: 2.125rem;
+    margin-left: 0;
+  }
+
+  .u-section-1 .u-text-2 {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .u-section-1 .u-text-3 {
+    margin-right: 0;
+  }
+}
