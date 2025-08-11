@@ -46084,7 +46084,10 @@ a.u-link.u-text-hover-color-var:hover {
 
 /*end-variables sitestylecss*/
  .u-header {
-  background-image: none;
+  background-image: url('images/wp9285341.jpg'), linear-gradient(to bottom, rgba(26, 26, 26, 1), rgba(26, 26, 26, 1));
+  background-position: 50% 50%, 50% 50%;
+  background-repeat: no-repeat, no-repeat;
+  background-size: cover, cover;
 }
 
 .u-header .u-sheet-1 {
@@ -46118,10 +46121,11 @@ a.u-link.u-text-hover-color-var:hover {
 }
 
 .u-header .u-nav-1 {
-  font-weight: 700;
   font-size: 1.25rem;
   text-transform: uppercase;
   letter-spacing: normal;
+  font-weight: 700;
+  font-family: "Agu Display";
 }
 
 .u-header .u-nav-2 {
