@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="de">
+<html lang="en">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>ARK Battlepass — 100 Levels (Lvl 1000 Dinos)</title>
+<title>ARK Battlepass — 100 Levels (Custom Rewards)</title>
 <style>
   :root{
     --accent1:#7c3aed;
@@ -61,6 +61,7 @@
     border:1px solid rgba(255,255,255,0.04);
     padding:8px 12px;border-radius:10px;cursor:pointer;font-size:13px;
     backdrop-filter: blur(4px);
+    user-select:none;
   }
   .btn.primary{
     background:linear-gradient(90deg,var(--accent1),var(--accent2));
@@ -92,14 +93,14 @@
 
   .grid{
     display:grid;
-    grid-template-columns: repeat(auto-fill, minmax(170px,1fr));
+    grid-template-columns: repeat(auto-fill, minmax(190px,1fr));
     gap:12px;
   }
   .card{
     background:rgba(0,0,0,0.45);
     border:1px solid rgba(255,255,255,0.03);
-    padding:12px;border-radius:12px;position:relative;
-    min-height:110px;
+    padding:12px 14px;border-radius:12px;position:relative;
+    min-height:130px;
     display:flex;flex-direction:column;gap:8px;
     transition:transform .14s ease, box-shadow .14s ease;
   }
@@ -108,29 +109,99 @@
     font-weight:700;font-size:14px;letter-spacing:0.6px;
     display:flex;align-items:center;gap:8px;
   }
-  .dino{
-    font-size:13px;color:var(--muted);
-    display:flex;align-items:center;gap:8px;
+  .reward{
+    font-size:14px;color:#d1d5db;
+    flex-grow:1;
   }
-  .badge{
-    background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:8px;font-size:12px;color:var(--muted)
-  }
-  .lvl1000{font-weight:700;color:var(--accent2);font-size:12px}
-
   .claim-btn{
     margin-top:auto;display:flex;gap:8px;align-items:center;
   }
-  .small-btn{font-size:13px;padding:6px 8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04);cursor:pointer;color:var(--muted)}
+  .small-btn{
+    font-size:13px;padding:6px 10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04);
+    cursor:pointer;color:var(--muted);
+    user-select:none;
+  }
+  .small-btn:hover{
+    border-color: var(--accent2);
+    color: var(--accent2);
+  }
   .claimed{
     outline:2px solid rgba(22,163,74,0.14);
     box-shadow:0 8px 18px rgba(16,185,129,0.06);
   }
-  .claimed .badge{background:linear-gradient(90deg, rgba(22,163,74,0.12), rgba(16,185,129,0.06)); color:var(--success)}
-  .claimed .lvl1000{color:var(--success)}
+  .claimed .reward{
+    color: var(--success);
+  }
+
+  .admin-only{
+    display:none;
+  }
 
   .legend{font-size:13px;color:var(--muted);margin-top:12px;background:rgba(0,0,0,0.4);padding:10px;border-radius:12px}
 
   footer{margin-top:26px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;background:rgba(0,0,0,0.4);padding:10px;border-radius:12px}
+
+  /* Modal overlay for editing */
+  #editModal {
+    position: fixed;
+    top:0; left:0; right:0; bottom:0;
+    background: rgba(0,0,0,0.75);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+  }
+  #editModal.active {
+    display: flex;
+  }
+  #editModal .modal-content {
+    background: rgba(12,18,40,0.9);
+    padding: 20px 24px;
+    border-radius: 16px;
+    width: 320px;
+    color: #e6eef6;
+    box-shadow: 0 8px 30px rgba(2,6,23,0.8);
+  }
+  #editModal label {
+    display: block;
+    margin-top: 12px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  #editModal input[type=text] {
+    width: 100%;
+    margin-top: 6px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255,255,255,0.06);
+    color: #e6eef6;
+    font-size: 14px;
+  }
+  #editModal .modal-buttons {
+    margin-top: 18px;
+    text-align: right;
+  }
+  #editModal button {
+    cursor: pointer;
+    padding: 8px 14px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+    font-size: 13px;
+    margin-left: 10px;
+    user-select:none;
+  }
+  #editModal button.cancel {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  #editModal button.save {
+    background: linear-gradient(90deg,var(--accent1),var(--accent2));
+    color: white;
+    box-shadow: 0 8px 20px rgba(12,18,40,0.6);
+  }
 </style>
 </head>
 <body>
@@ -139,218 +210,364 @@
       <div class="mark">ARK</div>
       <div>
         <h1>Battlepass — 100 Levels</h1>
-        <p class="lead">Alle Rewards: Dinos auf Level 1000 — markiere deinen Fortschritt</p>
+        <p class="lead">All rewards customizable — mark your progress</p>
       </div>
     </div>
 
     <div class="controls" role="toolbar">
       <label for="filter" style="color:var(--muted);font-size:13px">Filter</label>
       <select id="filter" class="btn">
-        <option value="all">Alle</option>
-        <option value="open">Offen</option>
-        <option value="claimed">Beansprucht</option>
+        <option value="all">All</option>
+        <option value="open">Open</option>
+        <option value="claimed">Claimed</option>
       </select>
 
-      <!-- Admin-Only Buttons -->
-      <button id="reset" class="btn admin-only" style="display:none">Reset</button>
-      <button id="shuffleBtn" class="btn admin-only" style="display:none">Zufallsnamen</button>
+      <!-- Admin-only controls -->
+      <button id="reset" class="btn admin-only">Reset</button>
+      <button id="randomize" class="btn admin-only">Randomize Rewards</button>
 
       <button id="export" class="btn">Export</button>
       <input id="importFile" type="file" accept=".json" style="display:none" />
       <button id="importBtn" class="btn">Import</button>
 
       <button id="adminLogin" class="btn primary">Admin Login</button>
+      <button id="adminLogout" class="btn admin-only">Admin Logout</button>
     </div>
   </header>
 
-  <div class="status-row">
-    <div class="progress-wrap">
+  <div class="status-row" aria-live="polite">
+    <div class="progress-wrap" aria-label="Progress">
       <div class="progress-bg">
-        <div id="progress" class="progress-bar"></div>
+        <div id="progressBar" class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
       </div>
     </div>
-    <div class="status-meta">
-      <div id="countText">0 / 100 levels beansprucht</div>
-      <div class="badge" id="percentBadge">0%</div>
-    </div>
+    <div class="status-meta" id="statusText">0 / 100 claimed</div>
   </div>
 
   <main>
-    <section class="grid" id="grid"></section>
-    <div class="legend">
-      Tip: Klick auf ein Level, um es als beansprucht zu markieren. Admin-Buttons erscheinen nach Login.
-    </div>
+    <div class="grid" id="battlepassGrid" aria-label="Battlepass Levels"></div>
   </main>
 
   <footer>
-    <div>Alle Dinos sind <strong>Level 1000</strong>.</div>
-    <div id="buildInfo">Gespeichert: <span id="savedAt">nie</span></div>
+    <div>Made with ❤️ for ARK</div>
+    <div>by YourName</div>
   </footer>
 
+  <!-- Edit Modal -->
+  <div id="editModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+    <div class="modal-content">
+      <h2 id="editModalTitle">Edit Reward</h2>
+      <form id="editForm">
+        <label for="rewardNameInput">Reward Name</label>
+        <input type="text" id="rewardNameInput" name="rewardName" required autocomplete="off" />
+        <label for="levelTextInput">Level / Description</label>
+        <input type="text" id="levelTextInput" name="levelText" required autocomplete="off" />
+        <div class="modal-buttons">
+          <button type="button" class="cancel">Cancel</button>
+          <button type="submit" class="save">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
 <script>
-const baseDinos = [
-  "Rex","Spinosaurus","Giganotosaurus","Wyvern","Argentavis","Quetzal","Therizinosaurus","Mosasaurus","Megalodon",
-  "Tapejara","Pteranodon","Direwolf","Sabertooth","Thylacoleo","Doedicurus","Ankylosaurus","Stegosaurus","Brontosaurus",
-  "Triceratops","Carbonemys","Kairuku","Diplodocus","Basilosaurus","Procoptodon","Manta","Pulmonoscorpius"
-];
-const TOTAL = 100;
-const STORAGE_KEY = "arkBattlepassClaims_v1";
-let dinos = [];
-let claimed = {};
+(() => {
+  const ADMIN_PASSWORD = 'FiberBloodbath'; // Change this as you like
 
-const ADMIN_PASSWORD = "MeinGeheimesPasswort"; // ändern!
-let isAdmin = false;
+  const battlepassGrid = document.getElementById('battlepassGrid');
+  const progressBar = document.getElementById('progressBar');
+  const statusText = document.getElementById('statusText');
+  const filterSelect = document.getElementById('filter');
+  const resetBtn = document.getElementById('reset');
+  const randomizeBtn = document.getElementById('randomize');
+  const exportBtn = document.getElementById('export');
+  const importBtn = document.getElementById('importBtn');
+  const importFile = document.getElementById('importFile');
+  const adminLoginBtn = document.getElementById('adminLogin');
+  const adminLogoutBtn = document.getElementById('adminLogout');
 
-function showAdminControls() {
-  document.querySelectorAll(".admin-only").forEach(btn => btn.style.display = "inline-block");
-}
+  const editModal = document.getElementById('editModal');
+  const editForm = document.getElementById('editForm');
+  const rewardNameInput = document.getElementById('rewardNameInput');
+  const levelTextInput = document.getElementById('levelTextInput');
 
-function loadState(){
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if(raw){
-    try{
-      const parsed = JSON.parse(raw);
-      dinos = parsed.dinos || [];
-      claimed = parsed.claimed || {};
-      document.getElementById('savedAt').textContent = parsed.savedAt || 'unbekannt';
-      return;
-    }catch(e){}
+  let isAdmin = false;
+  let claimedLevels = new Set();
+  let rewards = [];
+  let levelsCount = 100;
+
+  // Initialize default rewards
+  function defaultReward(i) {
+    return {
+      rewardName: `Rex`,
+      levelText: `Lvl 1000`
+    };
   }
-  dinos = [];
-  for(let i=0;i<TOTAL;i++){
-    dinos.push(baseDinos[i % baseDinos.length] + (Math.floor(i/baseDinos.length)+1));
+
+  function loadData() {
+    let saved = localStorage.getItem('battlepass_rewards');
+    if(saved){
+      try {
+        rewards = JSON.parse(saved);
+      } catch {
+        rewards = [];
+      }
+    }
+    if(!Array.isArray(rewards) || rewards.length !== levelsCount){
+      // initialize with default
+      rewards = [];
+      for(let i=0; i<levelsCount; i++){
+        rewards.push(defaultReward(i));
+      }
+      saveData();
+    }
+
+    let claimedRaw = localStorage.getItem('battlepass_claimed');
+    if(claimedRaw){
+      try {
+        claimedLevels = new Set(JSON.parse(claimedRaw));
+      } catch {
+        claimedLevels = new Set();
+      }
+    }
   }
-  claimed = {};
-}
 
-function saveState(){
-  const payload = { dinos, claimed, savedAt: new Date().toLocaleString() };
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-  document.getElementById('savedAt').textContent = payload.savedAt;
-}
+  function saveData(){
+    localStorage.setItem('battlepass_rewards', JSON.stringify(rewards));
+  }
+  function saveClaimed(){
+    localStorage.setItem('battlepass_claimed', JSON.stringify([...claimedLevels]));
+  }
 
-function renderGrid(filter="all"){
-  const grid = document.getElementById('grid');
-  grid.innerHTML = "";
-  for(let i=0;i<TOTAL;i++){
-    const level = i+1;
-    const name = dinos[i] || ("Dino #" + level);
-    const isClaimed = !!claimed[level];
+  function renderGrid(){
+    battlepassGrid.innerHTML = '';
+    for(let i=0; i<levelsCount; i++){
+      const card = document.createElement('article');
+      card.className = 'card';
+      card.setAttribute('tabindex','0');
+      if(claimedLevels.has(i)) card.classList.add('claimed');
+      card.dataset.levelIndex = i;
 
-    if(filter === "open" && isClaimed) continue;
-    if(filter === "claimed" && !isClaimed) continue;
+      // Level / Description text
+      const levelSpan = document.createElement('div');
+      levelSpan.className = 'level';
+      levelSpan.textContent = rewards[i].levelText;
 
-    const card = document.createElement('article');
-    card.className = 'card' + (isClaimed ? ' claimed' : '');
-    card.innerHTML = `
-      <div class="level">Level ${level} <span class="badge">Reward</span></div>
-      <div class="dino">${name} <span class="lvl1000">Lvl 1000</span></div>
-      <div class="claim-btn">
-        <button class="small-btn toggle-claim">${isClaimed ? "Beansprucht" : "Markieren"}</button>
-        <button class="small-btn copy-btn">Kopieren</button>
-      </div>
-    `;
-    card.querySelector('.toggle-claim').addEventListener('click', (e)=>{
-      e.stopPropagation(); toggleClaim(level);
+      // Reward Name text
+      const rewardSpan = document.createElement('div');
+      rewardSpan.className = 'reward';
+      rewardSpan.textContent = rewards[i].rewardName;
+
+      // Claim button
+      const claimBtn = document.createElement('button');
+      claimBtn.className = 'small-btn';
+      claimBtn.textContent = claimedLevels.has(i) ? 'Unclaim' : 'Claim';
+      claimBtn.setAttribute('aria-pressed', claimedLevels.has(i));
+      claimBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleClaim(i);
+      });
+
+      card.appendChild(levelSpan);
+      card.appendChild(rewardSpan);
+      const claimWrap = document.createElement('div');
+      claimWrap.className = 'claim-btn';
+      claimWrap.appendChild(claimBtn);
+
+      // If admin, add Edit button
+      if(isAdmin){
+        const editBtn = document.createElement('button');
+        editBtn.className = 'small-btn admin-only';
+        editBtn.textContent = 'Edit';
+        editBtn.addEventListener('click', e => {
+          e.stopPropagation();
+          openEditModal(i);
+        });
+        claimWrap.appendChild(editBtn);
+      }
+      card.appendChild(claimWrap);
+
+      battlepassGrid.appendChild(card);
+    }
+    updateProgress();
+    updateAdminUI();
+  }
+
+  function updateProgress(){
+    const claimedCount = claimedLevels.size;
+    const percent = Math.round((claimedCount / levelsCount) * 100);
+    progressBar.style.width = percent + '%';
+    progressBar.setAttribute('aria-valuenow', percent);
+    statusText.textContent = `${claimedCount} / ${levelsCount} claimed`;
+  }
+
+  function toggleClaim(level){
+    if(claimedLevels.has(level)){
+      claimedLevels.delete(level);
+    } else {
+      claimedLevels.add(level);
+    }
+    saveClaimed();
+    renderGrid();
+  }
+
+  function openEditModal(level){
+    rewardNameInput.value = rewards[level].rewardName;
+    levelTextInput.value = rewards[level].levelText;
+    editForm.dataset.level = level;
+    editModal.classList.add('active');
+    rewardNameInput.focus();
+  }
+
+  function closeEditModal(){
+    editModal.classList.remove('active');
+  }
+
+  function resetAll(){
+    if(!confirm('Reset all rewards and claims to default?')) return;
+    rewards = [];
+    claimedLevels.clear();
+    for(let i=0; i<levelsCount; i++){
+      rewards.push(defaultReward(i));
+    }
+    saveData();
+    saveClaimed();
+    renderGrid();
+  }
+
+  function randomizeRewards(){
+    if(!confirm('Randomize all rewards? This cannot be undone.')) return;
+    const exampleRewards = [
+      "Rex",
+      "Spino",
+      "Tek Rifle Blueprint",
+      "Blueprint 1",
+      "Wyvern Egg",
+      "Giganotosaurus",
+      "Scorpion",
+      "Electronics",
+      "C4 Explosive",
+      "Rocket Launcher",
+      "Fur Armor",
+      "Chibi Pet",
+      "Parasaur Saddle",
+      "Trike",
+      "Titanosaur"
+    ];
+    for(let i=0; i<levelsCount; i++){
+      rewards[i].rewardName = exampleRewards[Math.floor(Math.random()*exampleRewards.length)];
+      rewards[i].levelText = `Lvl ${1000 - i*10}`;
+    }
+    saveData();
+    renderGrid();
+  }
+
+  function updateAdminUI(){
+    document.querySelectorAll('.admin-only').forEach(el => {
+      el.style.display = isAdmin ? '' : 'none';
     });
-    card.querySelector('.copy-btn').addEventListener('click',(e)=>{
-      e.stopPropagation();
-      navigator.clipboard?.writeText(`${name} — Lvl 1000`).then(()=>{ flashMessage("Kopiert"); });
-    });
-    card.addEventListener('click', ()=> toggleClaim(level));
-    grid.appendChild(card);
+    adminLoginBtn.style.display = isAdmin ? 'none' : '';
+    adminLogoutBtn.style.display = isAdmin ? '' : 'none';
   }
-  updateProgress();
-}
 
-function toggleClaim(level){
-  if(claimed[level]) delete claimed[level];
-  else claimed[level] = true;
-  saveState();
-  renderGrid(document.getElementById('filter').value);
-}
-
-function updateProgress(){
-  const totalClaimed = Object.keys(claimed).length;
-  const percent = Math.round(totalClaimed / TOTAL * 100);
-  document.getElementById('progress').style.width = percent + "%";
-  document.getElementById('countText').textContent = `${totalClaimed} / ${TOTAL} levels beansprucht`;
-  document.getElementById('percentBadge').textContent = percent + "%";
-}
-
-function resetAll(){
-  if(!isAdmin) return;
-  if(!confirm("Alle Markierungen zurücksetzen?")) return;
-  claimed = {};
-  saveState();
-  renderGrid(document.getElementById('filter').value);
-}
-
-function shuffleDinoNames(){
-  if(!isAdmin) return;
-  for(let i=0;i<TOTAL;i++){
-    const pick = baseDinos[Math.floor(Math.random()*baseDinos.length)];
-    const suffix = Math.floor(Math.random()*1200)+800;
-    dinos[i] = pick + "-" + suffix;
+  function loginAdmin(){
+    const pw = prompt('Enter admin password:');
+    if(pw === ADMIN_PASSWORD){
+      isAdmin = true;
+      alert('Admin mode activated.');
+      updateAdminUI();
+      renderGrid();
+    } else {
+      alert('Wrong password!');
+    }
   }
-  saveState();
-  renderGrid(document.getElementById('filter').value);
-}
+  function logoutAdmin(){
+    isAdmin = false;
+    updateAdminUI();
+    renderGrid();
+  }
 
-function flashMessage(text){
-  const el = document.createElement('div');
-  el.textContent = text;
-  Object.assign(el.style,{
-    position:'fixed',right:'18px',bottom:'18px',background:'rgba(0,0,0,0.6)',padding:'10px 14px',borderRadius:'10px',
-    color:'white',fontSize:'13px',zIndex:9999
+  // Export / Import
+  exportBtn.addEventListener('click', () => {
+    const data = {
+      rewards,
+      claimed: [...claimedLevels]
+    };
+    const json = JSON.stringify(data, null, 2);
+    const blob = new Blob([json], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'battlepass_data.json';
+    a.click();
+    URL.revokeObjectURL(url);
   });
-  document.body.appendChild(el);
-  setTimeout(()=>el.style.opacity = '0',2200);
-  setTimeout(()=>el.remove(),3000);
-}
 
-document.getElementById('filter').addEventListener('change',(e)=> renderGrid(e.target.value));
-document.getElementById('reset').addEventListener('click', resetAll);
-document.getElementById('export').addEventListener('click', ()=>{
-  const data = { dinos, claimed, exportedAt: new Date().toISOString() };
-  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = 'ark_battlepass_progress.json';
-  document.body.appendChild(a); a.click(); URL.revokeObjectURL(url); a.remove();
-});
-document.getElementById('importBtn').addEventListener('click', ()=> document.getElementById('importFile').click());
-document.getElementById('importFile').addEventListener('change', (ev)=>{
-  const file = ev.target.files[0];
-  if(file){
+  importBtn.addEventListener('click', () => {
+    importFile.click();
+  });
+  importFile.addEventListener('change', () => {
+    const file = importFile.files[0];
+    if(!file) return;
     const reader = new FileReader();
-    reader.onload = function(e){
-      try{
-        const parsed = JSON.parse(e.target.result);
-        dinos = parsed.dinos || dinos;
-        claimed = parsed.claimed || {};
-        saveState();
-        renderGrid(document.getElementById('filter').value);
-        flashMessage("Import erfolgreich");
-      }catch(err){ flashMessage("Fehler beim Import"); }
+    reader.onload = e => {
+      try {
+        const data = JSON.parse(e.target.result);
+        if(data.rewards && Array.isArray(data.rewards) && data.claimed){
+          rewards = data.rewards;
+          claimedLevels = new Set(data.claimed);
+          saveData();
+          saveClaimed();
+          renderGrid();
+          alert('Import successful.');
+        } else {
+          alert('Invalid file format.');
+        }
+      } catch {
+        alert('Error reading file.');
+      }
     };
     reader.readAsText(file);
-  }
-});
+    importFile.value = '';
+  });
 
-document.getElementById('shuffleBtn').addEventListener('click', shuffleDinoNames);
-document.getElementById('adminLogin').addEventListener('click', () => {
-  const input = prompt("Bitte Admin-Passwort eingeben:");
-  if(input === ADMIN_PASSWORD) {
-    isAdmin = true;
-    showAdminControls();
-    flashMessage("Admin-Modus aktiviert");
-  } else {
-    flashMessage("Falsches Passwort");
-  }
-});
+  resetBtn.addEventListener('click', resetAll);
+  randomizeBtn.addEventListener('click', randomizeRewards);
+  adminLoginBtn.addEventListener('click', loginAdmin);
+  adminLogoutBtn.addEventListener('click', logoutAdmin);
 
-loadState();
-renderGrid();
+  editForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const level = +editForm.dataset.level;
+    rewards[level].rewardName = rewardNameInput.value.trim() || 'Unknown';
+    rewards[level].levelText = levelTextInput.value.trim() || `Lvl ${level + 1}`;
+    saveData();
+    renderGrid();
+    closeEditModal();
+  });
+  editForm.querySelector('.cancel').addEventListener('click', e => {
+    e.preventDefault();
+    closeEditModal();
+  });
+
+  filterSelect.addEventListener('change', () => {
+    const val = filterSelect.value;
+    const cards = battlepassGrid.querySelectorAll('.card');
+    cards.forEach(card => {
+      const idx = +card.dataset.levelIndex;
+      const claimed = claimedLevels.has(idx);
+      if(val === 'all') card.style.display = '';
+      else if(val === 'claimed') card.style.display = claimed ? '' : 'none';
+      else if(val === 'open') card.style.display = claimed ? 'none' : '';
+    });
+  });
+
+  // Init
+  loadData();
+  renderGrid();
+  updateAdminUI();
+
+})();
 </script>
 </body>
 </html>
