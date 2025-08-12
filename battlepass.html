@@ -1,585 +1,406 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>ARK Battlepass — 100 Levels (Custom Rewards)</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ARK Battlepass</title>
 <style>
-  :root{
-    --accent1:#7c3aed;
-    --accent2:#06b6d4;
-    --muted:#9aa4b2;
-    --glass: rgba(255,255,255,0.04);
-    --success:#16a34a;
-  }
-  *{box-sizing:border-box}
-  body{
-    margin:0;
-    font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    font-family: Arial, sans-serif;
     background: url('https://i.imgur.com/y1340aW.png') no-repeat center center fixed;
     background-size: cover;
-    color:#e6eef6;
-    padding:24px;
-    min-height:100vh;
-    backdrop-filter: blur(3px);
+    color: #00ffff;
+    overflow-x: hidden;
   }
 
-  header{
-    display:flex;
-    gap:16px;
-    align-items:center;
-    margin-bottom:20px;
-    flex-wrap:wrap;
-    background:rgba(0,0,0,0.4);
-    padding:12px;
-    border-radius:12px;
+  header {
+    padding: 10px 20px;
+    background-color: rgba(0,0,0,0.7);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
-  .logo{
-    display:flex;
-    align-items:center;
-    gap:12px;
+  .logo-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
-  .logo .mark{
-    width:64px;height:64px;border-radius:12px;
-    background:linear-gradient(135deg,var(--accent1),var(--accent2));
-    display:grid;place-items:center;font-weight:700;font-size:20px;color:white;
-    box-shadow:0 6px 20px rgba(2,6,23,0.6);
+  .logo-icon {
+    width: 128px;
+    height: 128px;
+    object-fit: contain;
   }
-  h1{margin:0;font-size:20px}
-  p.lead{margin:0;color:var(--muted);font-size:13px}
-
-  .controls{
-    margin-left:auto;
-    display:flex;
-    gap:10px;
-    align-items:center;
-    flex-wrap:wrap;
-  }
-  .btn{
-    background:var(--glass);
-    color:inherit;
-    border:1px solid rgba(255,255,255,0.04);
-    padding:8px 12px;border-radius:10px;cursor:pointer;font-size:13px;
-    backdrop-filter: blur(4px);
-    user-select:none;
-  }
-  .btn.primary{
-    background:linear-gradient(90deg,var(--accent1),var(--accent2));
-    border:none;
-    color:white;
-    box-shadow:0 8px 20px rgba(12,18,40,0.6);
+  h1 {
+    margin: 0;
+    color: #00ffff;
+    font-weight: 700;
+    text-shadow: 0 0 6px #00ffff;
   }
 
-  .status-row{
-    display:flex;
-    gap:12px;
-    align-items:center;
-    margin:14px 0 22px 0;
-    flex-wrap:wrap;
-    background:rgba(0,0,0,0.4);
-    padding:10px;
-    border-radius:12px;
+  .controls {
+    margin: 10px 20px;
   }
-  .progress-wrap{flex:1;min-width:220px}
-  .progress-bg{
-    background:rgba(255,255,255,0.06);
-    height:14px;border-radius:999px;overflow:hidden;
+  button {
+    margin-right: 10px;
+    padding: 8px 12px;
+    border: none;
+    background-color: #222;
+    color: #00ffff;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
   }
-  .progress-bar{
-    height:100%; width:0%; background:linear-gradient(90deg,var(--accent1),var(--accent2));
-    transition:width .4s ease;
-  }
-  .status-meta{display:flex;gap:12px;align-items:center;color:var(--muted);font-size:13px}
-
-  .grid{
-    display:grid;
-    grid-template-columns: repeat(auto-fill, minmax(190px,1fr));
-    gap:12px;
-  }
-  .card{
-    background:rgba(0,0,0,0.45);
-    border:1px solid rgba(255,255,255,0.03);
-    padding:12px 14px;border-radius:12px;position:relative;
-    min-height:130px;
-    display:flex;flex-direction:column;gap:8px;
-    transition:transform .14s ease, box-shadow .14s ease;
-  }
-  .card:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(2,6,23,0.6)}
-  .level{
-    font-weight:700;font-size:14px;letter-spacing:0.6px;
-    display:flex;align-items:center;gap:8px;
-  }
-  .reward{
-    font-size:14px;color:#d1d5db;
-    flex-grow:1;
-  }
-  .claim-btn{
-    margin-top:auto;display:flex;gap:8px;align-items:center;
-  }
-  .small-btn{
-    font-size:13px;padding:6px 10px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04);
-    cursor:pointer;color:var(--muted);
-    user-select:none;
-  }
-  .small-btn:hover{
-    border-color: var(--accent2);
-    color: var(--accent2);
-  }
-  .claimed{
-    outline:2px solid rgba(22,163,74,0.14);
-    box-shadow:0 8px 18px rgba(16,185,129,0.06);
-  }
-  .claimed .reward{
-    color: var(--success);
+  button:hover {
+    background-color: #055;
   }
 
-  .admin-only {
-  display: inline-block !important;
+  /* Responsive grid: 100 cards max, up to 10 columns */
+  .battlepass-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+    gap: 12px;
+    padding: 25px;
+    max-width: 1200px;
+    margin: 0 auto 50px;
+    box-sizing: border-box;
   }
 
+  .level-card {
+    background: #111;
+    border-radius: 12px;
+    padding: 15px 10px;
+    box-shadow:
+      0 0 6px #0ff,
+      0 0 12px #0ff,
+      0 0 20px #0ff,
+      inset 0 0 6px #0ff;
+    color: #0ff;
+    text-align: center;
+    user-select: none;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    cursor: default;
+    font-weight: 600;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    letter-spacing: 0.04em;
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 110px;
+    box-sizing: border-box;
+  }
 
-  .legend{font-size:13px;color:var(--muted);margin-top:12px;background:rgba(0,0,0,0.4);padding:10px;border-radius:12px}
+  .level-card:hover {
+    transform: translateY(-6px);
+    box-shadow:
+      0 0 10px #0ff,
+      0 0 20px #0ff,
+      0 0 30px #0ff,
+      inset 0 0 10px #0ff;
+  }
 
-  footer{margin-top:26px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;background:rgba(0,0,0,0.4);padding:10px;border-radius:12px}
+  .level-title {
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+    text-shadow:
+      0 0 4px #0ff,
+      0 0 8px #0ff;
+  }
 
-  /* Modal overlay for editing */
-  #editModal {
+  .reward-text {
+    font-size: 0.9rem;
+    line-height: 1.2;
+  }
+
+  .level-card input {
+    width: 90%;
+    padding: 6px 8px;
+    border-radius: 8px;
+    border: none;
+    background-color: #002f33;
+    color: #0ff;
+    font-weight: 600;
+    text-align: center;
+    box-shadow:
+      inset 0 0 6px #0ff,
+      0 0 8px #0ff;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    margin: 0 auto;
+  }
+
+  .level-card input:focus {
+    outline: none;
+    background-color: #004d52;
+    box-shadow:
+      0 0 12px #0ff,
+      0 0 24px #0ff,
+      inset 0 0 12px #0ff;
+    color: #ccf9ff;
+  }
+
+  /* Login Modal Styles */
+  #loginModal {
     position: fixed;
-    top:0; left:0; right:0; bottom:0;
-    background: rgba(0,0,0,0.75);
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0,0,0,0.85);
     display: none;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 10000;
+    z-index: 9999;
   }
-  #editModal.active {
+  #loginModal.active {
     display: flex;
   }
-  #editModal .modal-content {
-    background: rgba(12,18,40,0.9);
-    padding: 20px 24px;
-    border-radius: 16px;
-    width: 320px;
-    color: #e6eef6;
-    box-shadow: 0 8px 30px rgba(2,6,23,0.8);
+  #loginModal h2 {
+    margin-bottom: 20px;
+    color: #00ffff;
+    text-shadow: 0 0 8px #00ffff;
   }
-  #editModal label {
-    display: block;
-    margin-top: 12px;
-    font-weight: 600;
-    font-size: 14px;
-  }
-  #editModal input[type=text] {
-    width: 100%;
-    margin-top: 6px;
-    padding: 8px 10px;
-    border-radius: 10px;
+  #loginModal input[type="password"] {
+    padding: 10px;
+    font-size: 18px;
+    border-radius: 6px;
     border: none;
-    background: rgba(255,255,255,0.06);
-    color: #e6eef6;
-    font-size: 14px;
+    width: 300px;
+    max-width: 90vw;
+    margin-bottom: 15px;
+    background-color: #002f33;
+    color: #0ff;
+    font-weight: 600;
   }
-  #editModal .modal-buttons {
-    margin-top: 18px;
-    text-align: right;
+  #loginModal input[type="password"]:focus {
+    outline: none;
+    background-color: #004d52;
   }
-  #editModal button {
+  #loginModal button {
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 6px;
+    border: none;
+    background-color: #222;
+    color: #00ffff;
     cursor: pointer;
-    padding: 8px 14px;
-    border-radius: 12px;
-    border: none;
-    font-weight: 600;
-    font-size: 13px;
-    margin-left: 10px;
-    user-select:none;
+    width: 150px;
+    font-weight: 700;
+    transition: background-color 0.3s ease;
   }
-  #editModal button.cancel {
-    background: transparent;
-    color: var(--muted);
-    border: 1px solid rgba(255,255,255,0.06);
+  #loginModal button:hover {
+    background-color: #055;
   }
-  #editModal button.save {
-    background: linear-gradient(90deg,var(--accent1),var(--accent2));
-    color: white;
-    box-shadow: 0 8px 20px rgba(12,18,40,0.6);
-  }
-  /* Container für Logo und Text */
-.logo-container {
-  display: flex;
-  align-items: center;
-  gap: 8px; /* Abstand zwischen Bild und Text */
-}
-
-/* Stil für das Logo */
-.logo-icon {
-  width: 128px; /* Größe des Logos */
-  height: 128px;
-  object-fit: contain;
-}
-
+  #loginError {
+    color: #ff6666;
+    margin-top: 10px;
+    display: none;
+	
 </style>
 </head>
 <body>
+
 <header>
   <div class="logo-container">
-    <img src="https://i.imgur.com/jtndB3c.png" alt="ARK Logo" class="logo-icon">
-    <h1>ARK - Battlepass Seasson 1</h1>
+    <img src="https://i.imgur.com/jtndB3c.png" alt="ARK Logo" class="logo-icon" />
+    <h1>ARK Battlepass Seasson 1</h1>
   </div>
-  <!-- Weitere Header-Inhalte -->
+  <button id="openLoginBtn">Admin Login</button>
 </header>
 
+<div class="controls" id="adminControls" style="display:none;">
+  <button id="reset">Reset</button>
+  <button id="export">Export</button>
+  <button id="importBtn">Import</button>
+  <input type="file" id="importFile" style="display:none;" />
+  <button id="adminLogout">Logout</button>
+</div>
 
-    <div class="controls" role="toolbar">
-      <label for="filter" style="color:var(--muted);font-size:13px">Filter</label>
-      <select id="filter" class="btn">
-        <option value="all">All</option>
-        <option value="open">Open</option>
-        <option value="claimed">Claimed</option>
-      </select>
+<div class="battlepass-grid" id="battlepassGrid"></div>
 
-      <!-- Admin-only controls -->
-      <button id="reset" class="btn admin-only">Reset</button>
-      
-      <input id="importFile" type="file" accept=".json" style="display:none" />
-
-      <button id="adminLogin" class="btn primary">Admin Login</button>
-      <button id="adminLogout" class="btn admin-only">Admin Logout</button>
-    </div>
-  </header>
-
-  <div class="status-row" aria-live="polite">
-    <div class="progress-wrap" aria-label="Progress">
-      <div class="progress-bg">
-        <div id="progressBar" class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
-      </div>
-    </div>
-    <div class="status-meta" id="statusText">0 / 100 claimed</div>
-  </div>
-
-  <main>
-    <div class="grid" id="battlepassGrid" aria-label="Battlepass Levels"></div>
-  </main>
-
-  <footer>
-    <div>Made with ❤️ for ARK</div>
-    <div>by YourName</div>
-  </footer>
-
-  <!-- Edit Modal -->
-  <div id="editModal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
-    <div class="modal-content">
-      <h2 id="editModalTitle">Edit Reward</h2>
-      <form id="editForm">
-        <label for="rewardNameInput">Reward Name</label>
-        <input type="text" id="rewardNameInput" name="rewardName" required autocomplete="off" />
-        <label for="levelTextInput">Level / Description</label>
-        <input type="text" id="levelTextInput" name="levelText" required autocomplete="off" />
-        <div class="modal-buttons">
-          <button type="button" class="cancel">Cancel</button>
-          <button type="submit" class="save">Save</button>
-        </div>
-      </form>
-    </div>
-  </div>
+<!-- Login Modal -->
+<div id="loginModal">
+  <h2>ARK Battlepass Admin Login</h2>
+  <input type="password" id="passwordInput" placeholder="Enter admin password" />
+  <button id="loginBtn">Login</button>
+  <p id="loginError">Incorrect password, try again.</p>
+</div>
 
 <script>
-(() => {
-  const ADMIN_PASSWORD = 'FiberBloodbath'; // Change this as you like
+  const correctPassword = 'Fiberbloodbath';
 
   const battlepassGrid = document.getElementById('battlepassGrid');
-  const progressBar = document.getElementById('progressBar');
-  const statusText = document.getElementById('statusText');
-  const filterSelect = document.getElementById('filter');
   const resetBtn = document.getElementById('reset');
-  const randomizeBtn = document.getElementById('randomize');
   const exportBtn = document.getElementById('export');
   const importBtn = document.getElementById('importBtn');
   const importFile = document.getElementById('importFile');
-  const adminLoginBtn = document.getElementById('adminLogin');
   const adminLogoutBtn = document.getElementById('adminLogout');
+  const adminControls = document.getElementById('adminControls');
+  const openLoginBtn = document.getElementById('openLoginBtn');
 
-  const editModal = document.getElementById('editModal');
-  const editForm = document.getElementById('editForm');
-  const rewardNameInput = document.getElementById('rewardNameInput');
-  const levelTextInput = document.getElementById('levelTextInput');
+  const loginModal = document.getElementById('loginModal');
+  const passwordInput = document.getElementById('passwordInput');
+  const loginBtn = document.getElementById('loginBtn');
+  const loginError = document.getElementById('loginError');
 
   let isAdmin = false;
-  let claimedLevels = new Set();
-  let rewards = [];
-  let levelsCount = 100;
+  let battlepass = [];
 
-  // Initialize default rewards
-  function defaultReward(i) {
-    return {
-      rewardName: `Rex`,
-      levelText: `Lvl 1000`
-    };
-  }
+  // Beispiel-Dinos / Rewards (100+ damit wir 100 Levels füllen können)
+  const dinos = [
+    'Raptor', 'Triceratops', 'Stegosaurus', 'Pteranodon', 'T-Rex',
+    'Spinosaurus', 'Argentavis', 'Mammoth', 'Sabertooth', 'Ankylo',
+    'Quetzal', 'Therizinosaurus', 'Direwolf', 'Dodo', 'Purlovia',
+    'Thylacoleo', 'Rex Alpha', 'Megalodon', 'Giganotosaurus', 'Baryonyx',
+    'Phiomia', 'Carbonemys', 'Tapejara', 'Mosasaurus', 'Karkinos',
+    'Pulmonoscorpius', 'Megaloceros', 'Kaprosuchus', 'Ichthyosaurus', 'Microraptor',
+    'Pachycephalosaurus', 'Dimorphodon', 'Ichthyornis', 'Diplodocus', 'Doedicurus',
+    'Castoroides', 'Tapejara Prime', 'Mantis', 'Manta Ray', 'Tusoteuthis',
+    'Jerboa', 'Lymantria', 'Gigantopithecus', 'Therizino Alpha', 'Wyvern',
+    'Rock Drake', 'Ravager', 'Broodmother', 'Dragon', 'Enforcer',
+    'Basilisk', 'Kairuku', 'Electrophorus', 'Fjordhawk', 'Gasbags',
+    'Hesperornis', 'Iguanodon', 'Kaprosuchus Prime', 'Leedsichthys', 'Managarmr',
+    'Megalania', 'Otter', 'Pachyrhinosaurus', 'Paraceratherium', 'Procoptodon',
+    'Roll Rat', 'Sabertooth Prime', 'Sarco', 'Shadowmane', 'Shapeshifter',
+    'Snow Owl', 'Tek Rex', 'Therizino', 'Thylacoleo Prime', 'Titanoboa',
+    'Tusoteuthis Prime', 'Velonasaur', 'Vulture', 'Woolly Rhino', 'Yutyrannus',
+    'Alpha Raptor', 'Alpha Rex', 'Alpha Spino', 'Alpha Carno', 'Alpha Megalodon',
+    'Alpha Giga', 'Alpha Therizino', 'Alpha Argentavis', 'Alpha Mantis', 'Alpha Basilisk',
+    'Alpha Wyvern', 'Alpha Rock Drake', 'Alpha Ravager', 'Alpha Broodmother', 'Alpha Dragon',
+    'Alpha Enforcer', 'Alpha Titan', 'Alpha Griffin', 'Alpha Megalosaurus', 'Alpha Terror Bird',
+  ];
 
-  function loadData() {
-    let saved = localStorage.getItem('battlepass_rewards');
-    if(saved){
-      try {
-        rewards = JSON.parse(saved);
-      } catch {
-        rewards = [];
-      }
-    }
-    if(!Array.isArray(rewards) || rewards.length !== levelsCount){
-      // initialize with default
-      rewards = [];
-      for(let i=0; i<levelsCount; i++){
-        rewards.push(defaultReward(i));
-      }
-      saveData();
-    }
+  const totalLevels = 100; // genau 100 Levels
 
-    let claimedRaw = localStorage.getItem('battlepass_claimed');
-    if(claimedRaw){
-      try {
-        claimedLevels = new Set(JSON.parse(claimedRaw));
-      } catch {
-        claimedLevels = new Set();
-      }
-    }
-  }
-
-  function saveData(){
-    localStorage.setItem('battlepass_rewards', JSON.stringify(rewards));
-  }
-  function saveClaimed(){
-    localStorage.setItem('battlepass_claimed', JSON.stringify([...claimedLevels]));
-  }
-
-  function renderGrid(){
-    battlepassGrid.innerHTML = '';
-    for(let i=0; i<levelsCount; i++){
-      const card = document.createElement('article');
-      card.className = 'card';
-      card.setAttribute('tabindex','0');
-      if(claimedLevels.has(i)) card.classList.add('claimed');
-      card.dataset.levelIndex = i;
-
-      // Level / Description text
-      const levelSpan = document.createElement('div');
-      levelSpan.className = 'level';
-      levelSpan.textContent = rewards[i].levelText;
-
-      // Reward Name text
-      const rewardSpan = document.createElement('div');
-      rewardSpan.className = 'reward';
-      rewardSpan.textContent = rewards[i].rewardName;
-
-      // Claim button
-      const claimBtn = document.createElement('button');
-      claimBtn.className = 'small-btn';
-      claimBtn.textContent = claimedLevels.has(i) ? 'Unclaim' : 'Claim';
-      claimBtn.setAttribute('aria-pressed', claimedLevels.has(i));
-      claimBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        toggleClaim(i);
+  // Init battlepass data
+  function initBattlepass() {
+    battlepass = [];
+    for (let i = 1; i <= totalLevels; i++) {
+      battlepass.push({
+        level: i,
+        reward: dinos[(i - 1) % dinos.length]
       });
+    }
+  }
 
-      card.appendChild(levelSpan);
-      card.appendChild(rewardSpan);
-      const claimWrap = document.createElement('div');
-      claimWrap.className = 'claim-btn';
-      claimWrap.appendChild(claimBtn);
+  // Render Battlepass cards
+  function renderBattlepass() {
+    battlepassGrid.innerHTML = '';
+    for (const entry of battlepass) {
+      const card = document.createElement('div');
+      card.classList.add('level-card');
 
-      // If admin, add Edit button
-      if(isAdmin){
-        const editBtn = document.createElement('button');
-        editBtn.className = 'small-btn admin-only';
-        editBtn.textContent = 'Edit';
-        editBtn.addEventListener('click', e => {
-          e.stopPropagation();
-          openEditModal(i);
+      if (isAdmin) {
+        // Admin kann reward editieren
+        const rewardInput = document.createElement('input');
+        rewardInput.type = 'text';
+        rewardInput.value = entry.reward;
+        rewardInput.title = 'Reward bearbeiten';
+        rewardInput.addEventListener('input', (e) => {
+          entry.reward = e.target.value.trim();
         });
-        claimWrap.appendChild(editBtn);
+        const textDiv = document.createElement('div');
+        textDiv.innerHTML = `Level ${entry.level} Reward<br>Level 1000 ${entry.reward}`;
+        textDiv.style.marginBottom = '6px';
+        card.appendChild(textDiv);
+        card.appendChild(rewardInput);
+      } else {
+        // Normaler User sieht Text zweizeilig
+        const textDiv = document.createElement('div');
+        textDiv.innerHTML = `Level ${entry.level} Reward<br>Level 1000 ${entry.reward}`;
+        card.appendChild(textDiv);
       }
-      card.appendChild(claimWrap);
 
       battlepassGrid.appendChild(card);
     }
-    updateProgress();
-    updateAdminUI();
   }
 
-  function updateProgress(){
-    const claimedCount = claimedLevels.size;
-    const percent = Math.round((claimedCount / levelsCount) * 100);
-    progressBar.style.width = percent + '%';
-    progressBar.setAttribute('aria-valuenow', percent);
-    statusText.textContent = `${claimedCount} / ${levelsCount} claimed`;
-  }
+  // Admin Login öffnen
+  openLoginBtn.addEventListener('click', () => {
+    passwordInput.value = '';
+    loginError.style.display = 'none';
+    loginModal.classList.add('active');
+    passwordInput.focus();
+  });
 
-  function toggleClaim(level){
-    if(claimedLevels.has(level)){
-      claimedLevels.delete(level);
-    } else {
-      claimedLevels.add(level);
-    }
-    saveClaimed();
-    renderGrid();
-  }
-
-  function openEditModal(level){
-    rewardNameInput.value = rewards[level].rewardName;
-    levelTextInput.value = rewards[level].levelText;
-    editForm.dataset.level = level;
-    editModal.classList.add('active');
-    rewardNameInput.focus();
-  }
-
-  function closeEditModal(){
-    editModal.classList.remove('active');
-  }
-
-  function resetAll(){
-    if(!confirm('Reset all rewards and claims to default?')) return;
-    rewards = [];
-    claimedLevels.clear();
-    for(let i=0; i<levelsCount; i++){
-      rewards.push(defaultReward(i));
-    }
-    saveData();
-    saveClaimed();
-    renderGrid();
-  }
-
-  function randomizeRewards(){
-    if(!confirm('Randomize all rewards? This cannot be undone.')) return;
-    const exampleRewards = [
-      "Rex",
-      "Spino",
-      "Tek Rifle Blueprint",
-      "Blueprint 1",
-      "Wyvern Egg",
-      "Giganotosaurus",
-      "Scorpion",
-      "Electronics",
-      "C4 Explosive",
-      "Rocket Launcher",
-      "Fur Armor",
-      "Chibi Pet",
-      "Parasaur Saddle",
-      "Trike",
-      "Titanosaur"
-    ];
-    for(let i=0; i<levelsCount; i++){
-      rewards[i].rewardName = exampleRewards[Math.floor(Math.random()*exampleRewards.length)];
-      rewards[i].levelText = `Lvl ${1000 - i*10}`;
-    }
-    saveData();
-    renderGrid();
-  }
-
-  function updateAdminUI(){
-    document.querySelectorAll('.admin-only').forEach(el => {
-      el.style.display = isAdmin ? '' : 'none';
-    });
-    adminLoginBtn.style.display = isAdmin ? 'none' : '';
-    adminLogoutBtn.style.display = isAdmin ? '' : 'none';
-  }
-
-  function loginAdmin(){
-    const pw = prompt('Enter admin password:');
-    if(pw === ADMIN_PASSWORD){
+  // Admin Login prüfen
+  loginBtn.addEventListener('click', () => {
+    const pw = passwordInput.value;
+    if (pw === correctPassword) {
       isAdmin = true;
-      alert('Admin mode activated.');
-      updateAdminUI();
-      renderGrid();
+      loginModal.classList.remove('active');
+      adminControls.style.display = 'block';
+      openLoginBtn.style.display = 'none';
+      renderBattlepass();
     } else {
-      alert('Wrong password!');
+      loginError.style.display = 'block';
     }
-  }
-  function logoutAdmin(){
-    isAdmin = false;
-    updateAdminUI();
-    renderGrid();
-  }
+  });
 
-  // Export / Import
+  // Reset Battlepass auf Standardwerte
+  resetBtn.addEventListener('click', () => {
+    if(confirm('Alle Änderungen verwerfen und Battlepass zurücksetzen?')) {
+      initBattlepass();
+      renderBattlepass();
+    }
+  });
+
+  // Export Battlepass als JSON-Datei
   exportBtn.addEventListener('click', () => {
-    const data = {
-      rewards,
-      claimed: [...claimedLevels]
-    };
-    const json = JSON.stringify(data, null, 2);
-    const blob = new Blob([json], {type: 'application/json'});
+    const dataStr = JSON.stringify(battlepass, null, 2);
+    const blob = new Blob([dataStr], {type: 'application/json'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'battlepass_data.json';
+    a.download = 'battlepass.json';
     a.click();
     URL.revokeObjectURL(url);
   });
 
+  // Import Battlepass aus JSON-Datei
   importBtn.addEventListener('click', () => {
     importFile.click();
   });
   importFile.addEventListener('change', () => {
     const file = importFile.files[0];
-    if(!file) return;
+    if (!file) return;
     const reader = new FileReader();
-    reader.onload = e => {
+    reader.onload = (e) => {
       try {
-        const data = JSON.parse(e.target.result);
-        if(data.rewards && Array.isArray(data.rewards) && data.claimed){
-          rewards = data.rewards;
-          claimedLevels = new Set(data.claimed);
-          saveData();
-          saveClaimed();
-          renderGrid();
-          alert('Import successful.');
+        const importedData = JSON.parse(e.target.result);
+        if (Array.isArray(importedData) && importedData.length === totalLevels) {
+          // Validiere Struktur
+          const valid = importedData.every(item => 'level' in item && 'reward' in item);
+          if (valid) {
+            battlepass = importedData;
+            renderBattlepass();
+            alert('Battlepass erfolgreich importiert!');
+          } else {
+            alert('Ungültiges Format der importierten Datei.');
+          }
         } else {
-          alert('Invalid file format.');
+          alert(`Importierte Datei muss genau ${totalLevels} Stufen enthalten.`);
         }
       } catch {
-        alert('Error reading file.');
+        alert('Fehler beim Lesen der Datei. Stelle sicher, dass es eine gültige JSON-Datei ist.');
       }
     };
     reader.readAsText(file);
-    importFile.value = '';
   });
 
-  resetBtn.addEventListener('click', resetAll);
-  randomizeBtn.addEventListener('click', randomizeRewards);
-  adminLoginBtn.addEventListener('click', loginAdmin);
-  adminLogoutBtn.addEventListener('click', logoutAdmin);
-
-  editForm.addEventListener('submit', e => {
-    e.preventDefault();
-    const level = +editForm.dataset.level;
-    rewards[level].rewardName = rewardNameInput.value.trim() || 'Unknown';
-    rewards[level].levelText = levelTextInput.value.trim() || `Lvl ${level + 1}`;
-    saveData();
-    renderGrid();
-    closeEditModal();
-  });
-  editForm.querySelector('.cancel').addEventListener('click', e => {
-    e.preventDefault();
-    closeEditModal();
+  // Admin Logout
+  adminLogoutBtn.addEventListener('click', () => {
+    isAdmin = false;
+    adminControls.style.display = 'none';
+    openLoginBtn.style.display = 'block';
+    renderBattlepass();
   });
 
-  filterSelect.addEventListener('change', () => {
-    const val = filterSelect.value;
-    const cards = battlepassGrid.querySelectorAll('.card');
-    cards.forEach(card => {
-      const idx = +card.dataset.levelIndex;
-      const claimed = claimedLevels.has(idx);
-      if(val === 'all') card.style.display = '';
-      else if(val === 'claimed') card.style.display = claimed ? '' : 'none';
-      else if(val === 'open') card.style.display = claimed ? 'none' : '';
-    });
-  });
+  // Initialisierung
+  initBattlepass();
+  renderBattlepass();
 
-  // Init
-  loadData();
-  renderGrid();
-  updateAdminUI();
-
-})();
 </script>
+
 </body>
 </html>
