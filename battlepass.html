@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ARK Battlepass — 100 Levels (Lvl 1000 Dinos)</title>
+<style>
+  :root{
+    --bg:#0f1724;
+    --card:#0b1220;
+    --accent1:#7c3aed;
+    --accent2:#06b6d4;
+    --muted:#9aa4b2;
+    --glass: rgba(255,255,255,0.04);
+    --success:#16a34a;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial;
+    background:
+      radial-gradient(800px 400px at 10% 10%, rgba(124,58,237,0.08), transparent 10%),
+      radial-gradient(700px 350px at 90% 90%, rgba(6,182,212,0.04), transparent 10%),
+      var(--bg);
+    color:#e6eef6;
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    padding:24px;
+    min-height:100vh;
+  }
+
+  header{
+    display:flex;
+    gap:16px;
+    align-items:center;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+  }
+  .logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .logo .mark{
+    width:64px;height:64px;border-radius:12px;
+    background:linear-gradient(135deg,var(--accent1),var(--accent2));
+    display:grid;place-items:center;font-weight:700;font-size:20px;color:white;
+    box-shadow:0 6px 20px rgba(2,6,23,0.6);
+  }
+  h1{margin:0;font-size:20px}
+  p.lead{margin:0;color:var(--muted);font-size:13px}
+
+  .controls{
+    margin-left:auto;
+    display:flex;
+    gap:10px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  .btn{
+    background:var(--glass);
+    color:inherit;
+    border:1px solid rgba(255,255,255,0.04);
+    padding:8px 12px;border-radius:10px;cursor:pointer;font-size:13px;
+    backdrop-filter: blur(4px);
+  }
+  .btn.primary{
+    background:linear-gradient(90deg,var(--accent1),var(--accent2));
+    border:none;
+    color:white;
+    box-shadow:0 8px 20px rgba(12,18,40,0.6);
+  }
+
+  .status-row{
+    display:flex;
+    gap:12px;
+    align-items:center;
+    margin:14px 0 22px 0;
+    flex-wrap:wrap;
+  }
+  .progress-wrap{flex:1;min-width:220px}
+  .progress-bg{
+    background:rgba(255,255,255,0.06);
+    height:14px;border-radius:999px;overflow:hidden;
+  }
+  .progress-bar{
+    height:100%; width:0%; background:linear-gradient(90deg,var(--accent1),var(--accent2));
+    transition:width .4s ease;
+  }
+  .status-meta{display:flex;gap:12px;align-items:center;color:var(--muted);font-size:13px}
+
+  .grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px,1fr));
+    gap:12px;
+  }
+  .card{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border:1px solid rgba(255,255,255,0.03);
+    padding:12px;border-radius:12px;position:relative;
+    min-height:110px;
+    display:flex;flex-direction:column;gap:8px;
+    transition:transform .14s ease, box-shadow .14s ease;
+  }
+  .card:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(2,6,23,0.6)}
+  .level{
+    font-weight:700;font-size:14px;letter-spacing:0.6px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .dino{
+    font-size:13px;color:var(--muted);
+    display:flex;align-items:center;gap:8px;
+  }
+  .badge{
+    background:rgba(255,255,255,0.03);padding:6px 8px;border-radius:8px;font-size:12px;color:var(--muted)
+  }
+  .lvl1000{font-weight:700;color:var(--accent2);font-size:12px}
+
+  .claim-btn{
+    margin-top:auto;display:flex;gap:8px;align-items:center;
+  }
+  .small-btn{font-size:13px;padding:6px 8px;border-radius:8px;background:transparent;border:1px solid rgba(255,255,255,0.04);cursor:pointer;color:var(--muted)}
+  .claimed{
+    outline:2px solid rgba(22,163,74,0.14);
+    box-shadow:0 8px 18px rgba(16,185,129,0.06);
+  }
+  .claimed .badge{background:linear-gradient(90deg, rgba(22,163,74,0.12), rgba(16,185,129,0.06)); color:var(--success)}
+  .claimed .lvl1000{color:var(--success)}
+
+  .legend{font-size:13px;color:var(--muted);margin-top:12px}
+
+  footer{margin-top:26px;color:var(--muted);font-size:13px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+
+  /* responsive tweaks */
+  @media (max-width:540px){
+    .logo .mark{width:52px;height:52px}
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <div class="mark">ARK</div>
+      <div>
+        <h1>Battlepass — 100 Levels</h1>
+        <p class="lead">Alle Rewards: **Dinos auf Level 1000** — markiere, lade hoch oder exportiere deinen Fortschritt.</p>
+      </div>
+    </div>
+
+    <div class="controls" role="toolbar" aria-label="Battlepass Kontrolle">
+      <label for="filter" style="color:var(--muted);font-size:13px">Filter</label>
+      <select id="filter" class="btn" aria-label="Filter">
+        <option value="all">Alle</option>
+        <option value="open">Offen</option>
+        <option value="claimed">Beansprucht</option>
+      </select>
+      <button id="reset" class="btn" title="Alle zurücksetzen">Reset</button>
+      <button id="export" class="btn" title="Fortschritt als JSON herunterladen">Export</button>
+      <input id="importFile" type="file" accept=".json" style="display:none" />
+      <button id="importBtn" class="btn">Import</button>
+      <button id="shuffleBtn" class="btn">Zufallsnamen</button>
+      <button id="randomizeVisual" class="btn primary" title="Füge visuelle Effekte hinzu">Style →</button>
+    </div>
+  </header>
+
+  <div class="status-row">
+    <div class="progress-wrap" aria-hidden="false">
+      <div class="progress-bg" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+        <div id="progress" class="progress-bar"></div>
+      </div>
+    </div>
+    <div class="status-meta">
+      <div id="countText">0 / 100 levels beansprucht</div>
+      <div class="badge" id="percentBadge">0%</div>
+    </div>
+  </div>
+
+  <main>
+    <section class="grid" id="grid" aria-live="polite">
+      <!-- Cards werden per JS erzeugt -->
+    </section>
+
+    <div class="legend">
+      Tip: Klick auf ein Level, um es als beansprucht zu markieren. Du kannst die Dino‑Liste anpassen oder "Zufallsnamen" drücken, um neue Namen zu generieren.
+    </div>
+  </main>
+
+  <footer>
+    <div>Erstellt für ARK — Alle Dinos sind <strong>Level 1000</strong>.</div>
+    <div id="buildInfo">Lokaler Fortschritt — gespeichert: <span id="savedAt">nie</span></div>
+  </footer>
+
+<script>
+/* ARK Battlepass — 100 levels, all dinos at level 1000
+   - localStorage: key "arkBattlepassClaims"
+   - features: claim/unclaim, filter, export/import, shuffle dino names, responsive
+*/
+
+// Basisliste von Dino‑Namen (erweiterbar)
+const baseDinos = [
+  "Rex","Spinosaurus","Giganotosaurus","Wyvern","Argentavis","Quetzal","Therizinosaurus","Mosasaurus","Megalodon",
+  "Tapejara","Pteranodon","Direwolf","Sabertooth","Thylacoleo","Doedicurus","Ankylosaurus","Stegosaurus","Brontosaurus",
+  "Triceratops","Carbonemys","Kairuku","Diplodocus","Basilosaurus","Procoptodon","Manta","Pulmonoscorpius"
+];
+
+const TOTAL = 100;
+const STORAGE_KEY = "arkBattlepassClaims_v1";
+
+let dinos = []; // array of names length TOTAL
+let claimed = {}; // level -> true
+
+// Helper: load/save
+function loadState(){
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if(raw){
+    try{
+      const parsed = JSON.parse(raw);
+      dinos = parsed.dinos || [];
+      claimed = parsed.claimed || {};
+      document.getElementById('savedAt').textContent = parsed.savedAt || 'unbekannt';
+      return;
+    }catch(e){
+      console.warn("Load failed", e);
+    }
+  }
+  // init defaults
+  dinos = [];
+  for(let i=0;i<TOTAL;i++){
+    dinos.push(baseDinos[i % baseDinos.length] + (Math.floor(i/baseDinos.length)+1)); // small suffix to vary names
+  }
+  claimed = {};
+}
+
+function saveState(){
+  const payload = { dinos, claimed, savedAt: new Date().toLocaleString() };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+  document.getElementById('savedAt').textContent = payload.savedAt;
+}
+
+function renderGrid(filter="all"){
+  const grid = document.getElementById('grid');
+  grid.innerHTML = "";
+  for(let i=0;i<TOTAL;i++){
+    const level = i+1;
+    const name = dinos[i] || ("Dino #" + level);
+    const isClaimed = !!claimed[level];
+
+    if(filter === "open" && isClaimed) continue;
+    if(filter === "claimed" && !isClaimed) continue;
+
+    const card = document.createElement('article');
+    card.className = 'card' + (isClaimed ? ' claimed' : '');
+    card.setAttribute('tabindex','0');
+    card.setAttribute('role','button');
+    card.setAttribute('aria-pressed', isClaimed ? 'true' : 'false');
+    card.innerHTML = `
+      <div class="level">Level ${level} <span class="badge">Reward</span></div>
+      <div class="dino">${name} <span class="lvl1000">Lvl 1000</span></div>
+      <div class="claim-btn">
+        <button class="small-btn toggle-claim">${isClaimed ? "Beansprucht" : "Markieren"}</button>
+        <button class="small-btn copy-btn" title="Dino kopieren">Kopieren</button>
+      </div>
+    `;
+    // click handlers
+    card.querySelector('.toggle-claim').addEventListener('click', (e)=>{
+      e.stopPropagation();
+      toggleClaim(level);
+    });
+    card.querySelector('.copy-btn').addEventListener('click',(e)=>{
+      e.stopPropagation();
+      navigator.clipboard?.writeText(`${name} — Lvl 1000`).then(()=>{ flashMessage("In die Zwischenablage kopiert"); }).catch(()=>{ flashMessage("Kopieren fehlgeschlagen"); });
+    });
+    // click on card toggles
+    card.addEventListener('click', ()=>{
+      toggleClaim(level);
+    });
+    card.addEventListener('keydown', (ev)=>{
+      if(ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); toggleClaim(level); }
+    });
+
+    grid.appendChild(card);
+  }
+  updateProgress();
+}
+
+function toggleClaim(level){
+  if(claimed[level]) delete claimed[level];
+  else claimed[level] = true;
+  saveState();
+  renderGrid(document.getElementById('filter').value);
+}
+
+function updateProgress(){
+  const totalClaimed = Object.keys(claimed).length;
+  const percent = Math.round(totalClaimed / TOTAL * 100);
+  const bar = document.getElementById('progress');
+  bar.style.width = percent + "%";
+  document.getElementById('countText').textContent = `${totalClaimed} / ${TOTAL} levels beansprucht`;
+  document.getElementById('percentBadge').textContent = percent + "%";
+}
+
+function resetAll(){
+  if(!confirm("Alle Markierungen zurücksetzen?")) return;
+  claimed = {};
+  saveState();
+  renderGrid(document.getElementById('filter').value);
+}
+
+function exportJSON(){
+  const data = { dinos, claimed, exportedAt: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'ark_battlepass_progress.json';
+  document.body.appendChild(a);
+  a.click();
+  URL.revokeObjectURL(url);
+  a.remove();
+}
+
+function importJSON(file){
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const parsed = JSON.parse(e.target.result);
+      if(Array.isArray(parsed.dinos) && typeof parsed.claimed === 'object'){
+        dinos = parsed.dinos.slice(0, TOTAL);
+        // ensure length
+        while(dinos.length < TOTAL) dinos.push("Dino #" + (dinos.length+1));
+        claimed = parsed.claimed || {};
+        saveState();
+        renderGrid(document.getElementById('filter').value);
+        flashMessage("Import erfolgreich");
+      }else{
+        flashMessage("Ungültiges Format");
+      }
+    }catch(err){
+      flashMessage("Fehler beim Einlesen");
+    }
+  };
+  reader.readAsText(file);
+}
+
+function flashMessage(text){
+  const el = document.createElement('div');
+  el.textContent = text;
+  Object.assign(el.style,{
+    position:'fixed',right:'18px',bottom:'18px',background:'rgba(0,0,0,0.6)',padding:'10px 14px',borderRadius:'10px',
+    color:'white',fontSize:'13px',zIndex:9999
+  });
+  document.body.appendChild(el);
+  setTimeout(()=>el.style.opacity = '0',2200);
+  setTimeout(()=>el.remove(),3000);
+}
+
+function shuffleDinoNames(){
+  // generate fun randomized names from baseDinos
+  for(let i=0;i<TOTAL;i++){
+    const pick = baseDinos[Math.floor(Math.random()*baseDinos.length)];
+    const suffix = Math.floor(Math.random()*1200)+800; // 800-1999 to create variation
+    dinos[i] = pick + "-" + suffix;
+  }
+  saveState();
+  renderGrid(document.getElementById('filter').value);
+  flashMessage("Dino‑Namen neu generiert");
+}
+
+// initial load
+loadState();
+renderGrid();
+
+// ui bindings
+document.getElementById('filter').addEventListener('change',(e)=> renderGrid(e.target.value));
+document.getElementById('reset').addEventListener('click', resetAll);
+document.getElementById('export').addEventListener('click', exportJSON);
+document.getElementById('importBtn').addEventListener('click', ()=> document.getElementById('importFile').click());
+document.getElementById('importFile').addEventListener('change', (ev)=>{
+  const file = ev.target.files[0];
+  if(file) importJSON(file);
+  ev.target.value = '';
+});
+document.getElementById('shuffleBtn').addEventListener('click', shuffleDinoNames);
+
+// "Style →" button for fun: toggles extra visuals
+document.getElementById('randomizeVisual').addEventListener('click', function(){
+  const root = document.documentElement;
+  // toggle a funky background accent
+  if(root.style.getPropertyValue('--accent1') === ''){
+    root.style.setProperty('--accent1','#ef4444');
+    root.style.setProperty('--accent2','#f97316');
+    flashMessage("Style geändert — warmes Farbschema");
+  }else{
+    root.style.setProperty('--accent1','#7c3aed');
+    root.style.setProperty('--accent2','#06b6d4');
+    // reset to default by unsetting inline if you like
+    root.style.removeProperty('--accent1'); root.style.removeProperty('--accent2');
+    flashMessage("Style zurückgesetzt");
+  }
+});
+
+// small autosave on unload
+window.addEventListener('beforeunload', saveState);
+</script>
+</body>
+</html>
