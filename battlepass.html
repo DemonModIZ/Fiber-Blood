@@ -133,9 +133,10 @@
     color: var(--success);
   }
 
-  .admin-only{
-    display:none;
+  .admin-only {
+  display: inline-block !important;
   }
+
 
   .legend{font-size:13px;color:var(--muted);margin-top:12px;background:rgba(0,0,0,0.4);padding:10px;border-radius:12px}
 
@@ -202,17 +203,31 @@
     color: white;
     box-shadow: 0 8px 20px rgba(12,18,40,0.6);
   }
+  /* Container für Logo und Text */
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Abstand zwischen Bild und Text */
+}
+
+/* Stil für das Logo */
+.logo-icon {
+  width: 128px; /* Größe des Logos */
+  height: 128px;
+  object-fit: contain;
+}
+
 </style>
 </head>
 <body>
-  <header>
-    <div class="logo">
-      <div class="mark">ARK</div>
-      <div>
-        <h1>Battlepass — 100 Levels</h1>
-        <p class="lead">All rewards customizable — mark your progress</p>
-      </div>
-    </div>
+<header>
+  <div class="logo-container">
+    <img src="https://i.imgur.com/jtndB3c.png" alt="ARK Logo" class="logo-icon">
+    <h1>ARK - Battlepass Seasson 1</h1>
+  </div>
+  <!-- Weitere Header-Inhalte -->
+</header>
+
 
     <div class="controls" role="toolbar">
       <label for="filter" style="color:var(--muted);font-size:13px">Filter</label>
