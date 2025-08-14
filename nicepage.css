@@ -1106,6 +1106,7 @@ ol {
   line-height: inherit;
   letter-spacing: inherit;
   text-transform: inherit;
+  text-decoration: inherit;
 }
 .u-text:not(ul):not(ol):not(p):not(.u-post-content):not(.u-block-content):not(.u-product-desc):not(.u-cart-block-content):not(.u-checkout-block-content) a {
   color: inherit;
@@ -2793,6 +2794,7 @@ a {
 }
 .u-form-number input[type="range"] {
   -webkit-appearance: none;
+  background: none;
   padding-left: 0;
   padding-right: 0;
   border: 0;
@@ -15873,7 +15875,7 @@ div.u-video,
   transform: translateY(20%);
 }
 .u-dropdown-icon .u-nav-container .u-nav-popup .u-nav-link:first-child:nth-last-child(2):after {
-  content: "";
+  content: none;
 }
 .u-spacing-100:not(.u-text) > li:not(:last-child) {
   margin-right: 100px;
@@ -46084,7 +46086,7 @@ a.u-link.u-text-hover-color-var:hover {
 
 /*end-variables sitestylecss*/
  .u-header {
-  background-image: url('images/wp9285341.jpg'), linear-gradient(to bottom, rgba(26, 26, 26, 1), rgba(26, 26, 26, 1));
+  background-image: url('images/1738273107_extinbctionbanner_1B.png.db59fcea9bd8d3bbd5df4f2413fc581f.png'), linear-gradient(to bottom, rgba(26, 26, 26, 1), rgba(26, 26, 26, 1));
   background-position: 50% 50%, 50% 50%;
   background-repeat: no-repeat, no-repeat;
   background-size: cover, cover;
@@ -46176,31 +46178,40 @@ a.u-link.u-text-hover-color-var:hover {
 }
 
 .u-footer .u-sheet-1 {
-  min-height: 120px;
+  min-height: 106px;
+}
+
+.u-footer .u-icon-1 {
+  width: 51px;
+  height: 51px;
+  margin: 15px 205px 0 auto;
+  padding: 0;
 }
 
 .u-footer .u-text-1 {
-  width: 417px;
-  margin: 49px auto;
+  width: 495px;
+  margin: -44px auto 46px;
 }
 @media (max-width: 1199px) {
-  .u-footer .u-sheet-1 {
-    min-height: 99px;
+  .u-footer .u-icon-1 {
+    width: 51px;
+    margin-right: 205px;
+  }
+
+  .u-footer .u-text-1 {
+    width: 417px;
+    margin-top: -44px;
   }
 }
-@media (max-width: 991px) {
-  .u-footer .u-sheet-1 {
-    min-height: 76px;
-  }
-}
+
 @media (max-width: 767px) {
-  .u-footer .u-sheet-1 {
-    min-height: 57px;
+  .u-footer .u-icon-1 {
+    margin-right: 154px;
   }
 }
 @media (max-width: 575px) {
-  .u-footer .u-sheet-1 {
-    min-height: 36px;
+  .u-footer .u-icon-1 {
+    margin-right: 97px;
   }
 
   .u-footer .u-text-1 {
